@@ -3,6 +3,8 @@ __author__ = 'Joe.Hootman'
 import couchdb
 from couchdb.mapping import TextField, IntegerField, DateField, ListField, DateTimeField
 from couchdb import Server
+import nltk
+
 
 
 
@@ -66,3 +68,26 @@ for item in resultset2:
 #first corpus decision - whether to run with just hashtags or full tweet string.  Initially, just hashtags
 
 
+all_hashtags_resultset = []
+
+hashtags = db.view('_design/_views/_view/business_hashtags')
+print hashtags
+
+for row in hashtags:
+    for hashtag in row.value:
+        all_hashtags_resultset.append(hashtag)
+#    for hashtag in row:#.
+#        print hashtag.key()
+#        #all_hashtags_resultset.append(hashtag.key)
+
+print all_hashtags_resultset
+
+collection = nltk.TextCollection(all_hashtags_resultset)
+
+print "len(collection) = ", len(collection)
+
+queryterm = 'women'
+
+print "tf queryterm = ", collection.tf(queryterm, all_hashtags_resultset)
+print "idf queryterm = ", collection.idf(queryterm, all_hashtags_resultset)
+print "tf-idf queryterm = ", collection.tf_idf(queryterm, all_hashtags_resultset)
